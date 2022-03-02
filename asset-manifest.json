@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/quiztime/static/css/main.9598b771.css",
+    "main.js": "/quiztime/static/js/main.1657e74f.js",
+    "index.html": "/quiztime/index.html",
+    "main.9598b771.css.map": "/quiztime/static/css/main.9598b771.css.map",
+    "main.1657e74f.js.map": "/quiztime/static/js/main.1657e74f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9598b771.css",
+    "static/js/main.1657e74f.js"
+  ]
+}
