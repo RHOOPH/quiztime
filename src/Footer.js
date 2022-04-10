@@ -1,7 +1,6 @@
 import React from "react"
 
 export default function Footer(props) {
-  console.log("total=", props.total, " answered=", props.answered)
   return (
     <div className="footer">
       {props.showResult ? (
