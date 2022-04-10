@@ -1,15 +1,12 @@
-import React from "react";
+import React from "react"
 
 export default function Footer(props) {
   return (
     <div className="footer">
-      {props.didCheckAnswer ? (
+      {props.showResult ? (
         <div className="result">
-          <div>You scored {props.correctAnswers}/5 correct answers</div>
-          <div
-            className="btn"
-            onClick={() => props.setStartGame((prevGame) => prevGame + 1)}
-          >
+          <div>You scored {props.score}/5 correct answers</div>
+          <div className="btn" onClick={() => props.newGame()}>
             <div className="btn-txt">Play Again</div>
           </div>
         </div>
@@ -21,5 +18,5 @@ export default function Footer(props) {
         </div>
       )}
     </div>
-  );
+  )
 }

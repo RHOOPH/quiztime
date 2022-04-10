@@ -1,64 +1,57 @@
-import React, { useState, useEffect } from "react";
-import Intro from "./Intro";
-import "./styles.css";
-import Quiz from "./Quiz";
-import Footer from "./Footer.js";
-import htmlDecode from "./htmlDecode";
-import shuffle from "./shuffle";
+import React, { useState, useEffect } from "react"
+import Intro from "./Intro"
+import "./styles.css"
+import Quiz from "./Quiz"
+import Footer from "./Footer.js"
+import { htmlDecode, shuffle } from "./utils"
 
 export default function App() {
-  console.log("App rendered");
-  const [startGame, setStartGame] = useState(0);
-  const [allQuiz, setAllQuiz] = useState([]);
-  const [userAnswers, setUserAnswers] = useState([]);
-  const [didCheckAnswer, setdidCheckAnswer] = useState(false);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [allQuiz, setAllQuiz] = useState([])
+  const [userAnswers, setUserAnswers] = useState([])
+  const [showResult, setShowResult] = useState(false)
+  const [score, setScore] = useState(0)
 
-  useEffect(() => {
-    console.log(`userAnswers changed to =${userAnswers}`);
-  }, [userAnswers]);
-  useEffect(() => {
-    console.log(`didCheckAnswer changed to =${didCheckAnswer}`);
-  }, [didCheckAnswer]);
-  useEffect(() => {
-    console.log(`allQuiz changed to =${allQuiz}`);
-  }, [allQuiz]);
-  useEffect(() => {
-    if (startGame) {
-      fetch("https://opentdb.com/api.php?amount=5&category=18&type=multiple")
-        .then((res) => res.json())
-        .then((data) =>
-          setAllQuiz(
-            data.results.map((obj, index) => ({
+  const newGame = () => {
+    setScore(0)
+    setShowResult(false)
+    fetch("https://opentdb.com/api.php?amount=5&category=18&type=multiple")
+      .then((res) => res.json())
+      .then((data) =>
+        setAllQuiz(
+          data.results.map((obj, index) => {
+            let correct_answer = htmlDecode(obj.correct_answer)
+            return {
               ...obj,
               id: index,
-              options: shuffle([obj.correct_answer, ...obj.incorrect_answers]),
-            }))
-          )
-        );
-      setdidCheckAnswer(false);
-    }
-  }, [startGame]);
+              question: htmlDecode(obj.question),
+              correct_answer: correct_answer,
+              options: shuffle(
+                [correct_answer, ...obj.incorrect_answers].map((ans) =>
+                  htmlDecode(ans)
+                )
+              ),
+            }
+          })
+        )
+      )
+  }
   useEffect(() => {
-    setUserAnswers(allQuiz.length ? allQuiz.map((obj) => "") : []);
-  }, [allQuiz]);
+    setUserAnswers(allQuiz.length ? allQuiz.map((obj) => "") : [])
+  }, [allQuiz])
 
   const selectOption = (quizId, answer) => {
     setUserAnswers((prevUserAnswers) =>
       prevUserAnswers.map((e, index) => (index === quizId ? answer : e))
-    );
-  };
+    )
+  }
 
   const checkAnswers = () => {
     const check = userAnswers.map(
-      (answer, index) => answer === htmlDecode(allQuiz[index].correct_answer)
-    );
-    console.log(check);
-
-    setCorrectAnswers(check.reduce((acc, curr) => (curr ? ++acc : acc), 0));
-    console.log(correctAnswers);
-    setdidCheckAnswer(true);
-  };
+      (answer, index) => answer === allQuiz[index].correct_answer
+    )
+    setScore(check.reduce((acc, curr) => (curr ? ++acc : acc), 0))
+    setShowResult(true)
+  }
 
   const quizArray = allQuiz.map((quiz) => (
     <Quiz
@@ -66,25 +59,25 @@ export default function App() {
       quiz={quiz}
       selectOption={selectOption}
       selectedOption={userAnswers[quiz.id]}
-      didCheckAnswer={didCheckAnswer}
+      showResult={showResult}
     />
-  ));
+  ))
 
   return (
     <div className="app">
       {allQuiz.length === 0 ? (
-        <Intro setStartGame={setStartGame} />
+        <Intro newGame={newGame} />
       ) : (
         <div className="play">
           {quizArray}
           <Footer
-            correctAnswers={correctAnswers}
-            setStartGame={setStartGame}
+            score={score}
+            newGame={newGame}
             checkAnswers={checkAnswers}
-            didCheckAnswer={didCheckAnswer}
+            showResult={showResult}
           />
         </div>
       )}
     </div>
-  );
+  )
 }
