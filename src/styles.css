@@ -74,7 +74,7 @@ body {
 }
 .options {
   display: flex;
-  /* justify-content: space-around; */
+  /* justify-content: center; */
 }
 .option {
   display: flex;
@@ -106,15 +106,12 @@ body {
   position: fixed;
   bottom: 0;
 } */
-.result {
+.footer {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 }
-.check {
-  display: flex;
-  justify-content: center;
-}
+
 .loading {
   display: flex;
   height: 100vh;

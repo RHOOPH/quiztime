@@ -14,7 +14,9 @@ export default function App() {
 
   const getData = () => {
     setLoading(true)
-    fetch("https://opentdb.com/api.php?amount=5&category=18&type=multiple")
+    // https://opentdb.com/api.php?amount=5&category=18&type=multiple
+    // https://opentdb.com/api.php?amount=10&category=9&difficulty=easy
+    fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy")
       .then((res) => res.json())
       .then((data) =>
         setAllQuiz(
@@ -52,13 +54,15 @@ export default function App() {
     )
   }
 
-  const checkAnswers = () => {
-    console.log(allQuiz)
+  const checkAnswers = (total) => {
     const check = userAnswers.map(
       (answer, index) => answer === allQuiz[index].correct_answer
     )
-    setScore(check.reduce((acc, curr) => (curr ? ++acc : acc), 0))
-    setShowResult(true)
+    if (total === check.length) {
+      setScore(check.reduce((acc, curr) => (curr ? ++acc : acc), 0))
+      setShowResult(true)
+    } else {
+    }
   }
 
   const quizArray = allQuiz.map((quiz) => (
@@ -82,9 +86,14 @@ export default function App() {
           {quizArray}
           <Footer
             score={score}
+            total={quizArray.length}
             newGame={newGame}
             checkAnswers={checkAnswers}
             showResult={showResult}
+            answered={userAnswers.reduce(
+              (acc, curr) => (curr === "" ? acc : acc + 1),
+              0
+            )}
           />
         </div>
       )}
