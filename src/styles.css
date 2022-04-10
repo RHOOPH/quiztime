@@ -103,8 +103,8 @@ body {
   padding: 3px 10px;
 }
 /* .footer {
-  display: flex;
-  justify-content: center;
+  position: fixed;
+  bottom: 0;
 } */
 .result {
   display: flex;
@@ -114,4 +114,11 @@ body {
 .check {
   display: flex;
   justify-content: center;
+}
+.loading {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  color: #f5f7fb;
 }

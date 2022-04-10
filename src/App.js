@@ -10,10 +10,10 @@ export default function App() {
   const [userAnswers, setUserAnswers] = useState([])
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
+  const [loading, setLoading] = useState(true)
 
-  const newGame = () => {
-    setScore(0)
-    setShowResult(false)
+  const getData = () => {
+    setLoading(true)
     fetch("https://opentdb.com/api.php?amount=5&category=18&type=multiple")
       .then((res) => res.json())
       .then((data) =>
@@ -35,7 +35,14 @@ export default function App() {
         )
       )
   }
+
+  const newGame = () => {
+    setScore(0)
+    setShowResult(false)
+    getData()
+  }
   useEffect(() => {
+    setLoading(false)
     setUserAnswers(allQuiz.length ? allQuiz.map((obj) => "") : [])
   }, [allQuiz])
 
@@ -46,6 +53,7 @@ export default function App() {
   }
 
   const checkAnswers = () => {
+    console.log(allQuiz)
     const check = userAnswers.map(
       (answer, index) => answer === allQuiz[index].correct_answer
     )
@@ -67,6 +75,8 @@ export default function App() {
     <div className="app">
       {allQuiz.length === 0 ? (
         <Intro newGame={newGame} />
+      ) : loading ? (
+        <div className="loading">Loading</div>
       ) : (
         <div className="play">
           {quizArray}
