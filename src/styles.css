@@ -61,7 +61,7 @@ body {
   min-height: 100vh;
 }
 .play {
-  padding: 40px 75px;
+  padding: 40px 2rem;
   max-width: 70ch;
   background-color: white;
 }
