@@ -16,7 +16,7 @@ export default function App() {
     setLoading(true)
     // https://opentdb.com/api.php?amount=5&category=18&type=multiple
     // https://opentdb.com/api.php?amount=10&category=9&difficulty=easy
-    fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy")
+    fetch("https://opentdb.com/api.php?amount=7&category=18")
       .then((res) => res.json())
       .then((data) =>
         setAllQuiz(
