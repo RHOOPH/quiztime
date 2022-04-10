@@ -19,17 +19,17 @@ export default function App() {
       .then((data) =>
         setAllQuiz(
           data.results.map((obj, index) => {
-            let correct_answer = htmlDecode(obj.correct_answer)
+            const correct_answer = htmlDecode(obj.correct_answer)
+            const incorrect_answers = obj.incorrect_answers.map((ans) =>
+              htmlDecode(ans)
+            )
+
             return {
               ...obj,
               id: index,
               question: htmlDecode(obj.question),
               correct_answer: correct_answer,
-              options: shuffle(
-                [correct_answer, ...obj.incorrect_answers].map((ans) =>
-                  htmlDecode(ans)
-                )
-              ),
+              options: shuffle([correct_answer, ...incorrect_answers]),
             }
           })
         )
