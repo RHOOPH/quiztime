@@ -23,6 +23,12 @@ const Loading = styled.div`
   align-items: center;
   color: #f5f7fb;
 `
+const Retry = styled(Loading)`
+  flex-direction: column;
+  & button {
+    margin-top: 1rem;
+  }
+`
 
 export default function App() {
   const [allQuiz, setAllQuiz] = useState([])
@@ -30,6 +36,7 @@ export default function App() {
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   const getData = () => {
     setLoading(true)
@@ -37,7 +44,7 @@ export default function App() {
     // https://opentdb.com/api.php?amount=10&category=9&difficulty=easy
     fetch("https://opentdb.com/api.php?amount=7&category=18")
       .then((res) => res.json())
-      .then((data) =>
+      .then((data) => {
         setAllQuiz(
           data.results.map((obj, index) => {
             const correct_answer = htmlDecode(obj.correct_answer)
@@ -54,16 +61,21 @@ export default function App() {
             }
           })
         )
-      )
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error("Oops, something went wrong ", error)
+        setError(true)
+      })
   }
 
   const newGame = () => {
     setScore(0)
     setShowResult(false)
+    setError(false)
     getData()
   }
   useEffect(() => {
-    setLoading(false)
     setUserAnswers(allQuiz.length ? allQuiz.map((obj) => "") : [])
   }, [allQuiz])
 
@@ -99,7 +111,14 @@ export default function App() {
       {allQuiz.length === 0 ? (
         <Intro newGame={newGame} />
       ) : loading ? (
-        <Loading>Loading</Loading>
+        error ? (
+          <Retry>
+            <div>Oops something went wrong</div>
+            <button onClick={newGame}>Retry</button>
+          </Retry>
+        ) : (
+          <Loading>Loading</Loading>
+        )
       ) : (
         <Play>
           {quizArray}
