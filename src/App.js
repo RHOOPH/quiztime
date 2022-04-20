@@ -1,9 +1,28 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import Intro from "./Intro"
-import "./styles.css"
 import Quiz from "./Quiz"
 import Footer from "./Footer.js"
 import { htmlDecode, shuffle } from "./utils"
+import styled from "styled-components"
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  background-color: black;
+  min-height: 100vh;
+`
+const Play = styled.div`
+  padding: 40px 2rem;
+  max-width: 70ch;
+  background-color: white;
+`
+const Loading = styled.div`
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  color: #f5f7fb;
+`
 
 export default function App() {
   const [allQuiz, setAllQuiz] = useState([])
@@ -76,13 +95,13 @@ export default function App() {
   ))
 
   return (
-    <div className="app">
+    <Container>
       {allQuiz.length === 0 ? (
         <Intro newGame={newGame} />
       ) : loading ? (
-        <div className="loading">Loading</div>
+        <Loading>Loading</Loading>
       ) : (
-        <div className="play">
+        <Play>
           {quizArray}
           <Footer
             score={score}
@@ -95,8 +114,8 @@ export default function App() {
               0
             )}
           />
-        </div>
+        </Play>
       )}
-    </div>
+    </Container>
   )
 }
