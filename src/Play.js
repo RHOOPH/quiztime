@@ -56,7 +56,6 @@ export default function Play() {
         )
         setLoading(false)
         setUserAnswers(data.results.map((obj) => ""))
-        console.log("data acquired")
       })
       .catch((error) => {
         console.error("Oops, something went wrong ", error)
@@ -69,7 +68,6 @@ export default function Play() {
     setShowResult(false)
     setError(false)
     getData()
-    console.log("newGame Called")
   }
 
   const selectOption = (quizId, answer) => {
@@ -106,9 +104,6 @@ export default function Play() {
   useEffect(() => {
     newGame()
   }, [])
-
-  console.log("Play rendered")
-  console.log(userAnswers)
 
   return loading ? (
     error ? (
