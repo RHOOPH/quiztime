@@ -42,7 +42,7 @@ export default function Quiz({
   const spring = useSpring({
     from: { x: -100, opacity: 0 },
     to: { x: 0, opacity: 1 },
-    delay: index * 50,
+    delay: 100 + index * 50,
   })
   const [colors, api] = useSprings(quiz.options.length, (item) => ({
     background: "transparent",

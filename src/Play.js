@@ -4,14 +4,15 @@ import { useState, useEffect } from "react"
 import Footer from "./Footer.js"
 import { htmlDecode, shuffle } from "./utils"
 import { SpinnerCircularFixed as Spinner } from "spinners-react"
+import { animated, useTransition, config } from "@react-spring/web"
 
-const Container = styled.div`
+const Container = styled(animated.div)`
   padding: 40px 2rem;
   max-width: 70ch;
   background-color: white;
   overflow: hidden;
 `
-const Loading = styled.div`
+const Loading = styled(animated.div)`
   display: flex;
   height: 100vh;
   justify-content: center;
@@ -30,11 +31,10 @@ export default function Play() {
   const [userAnswers, setUserAnswers] = useState([])
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+  const [status, setStatus] = useState("loading")
 
   const getData = () => {
-    setLoading(true)
+    setStatus("loading")
     // https://opentdb.com/api.php?amount=5&category=18&type=multiple
     // https://opentdb.com/api.php?amount=10&category=9&difficulty=easy
     fetch("https://opentdb.com/api.php?amount=7&category=18")
@@ -56,19 +56,19 @@ export default function Play() {
             }
           })
         )
-        setLoading(false)
+        setStatus("ready")
         setUserAnswers(data.results.map((obj) => ""))
       })
       .catch((error) => {
         console.error("Oops, something went wrong ", error)
-        setError(true)
+        setStatus("error")
       })
   }
 
   const newGame = () => {
     setScore(0)
     setShowResult(false)
-    setError(false)
+    setStatus("loading")
     getData()
   }
 
@@ -104,31 +104,41 @@ export default function Play() {
     newGame()
   }, [])
 
-  return loading ? (
-    error ? (
-      <Retry>
+  const transition = useTransition(status, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+
+    exitBeforeEnter: true,
+    config: { duration: 400 },
+    clamp: true,
+  })
+
+  return transition((style, item) =>
+    item === "loading" ? (
+      <Loading style={style}>
+        <Spinner size="100px" color="white" />
+      </Loading>
+    ) : item === "error" ? (
+      <Retry style={style}>
         <div>Oops something went wrong</div>
         <button onClick={newGame}>Retry</button>
       </Retry>
     ) : (
-      <Loading>
-        <Spinner size="100px" color="white" />
-      </Loading>
+      <Container style={style}>
+        {quizArray}
+        <Footer
+          score={score}
+          total={quizArray.length}
+          newGame={newGame}
+          checkAnswers={checkAnswers}
+          showResult={showResult}
+          answered={userAnswers.reduce(
+            (acc, curr) => (curr === "" ? acc : acc + 1),
+            0
+          )}
+        />
+      </Container>
     )
-  ) : (
-    <Container>
-      {quizArray}
-      <Footer
-        score={score}
-        total={quizArray.length}
-        newGame={newGame}
-        checkAnswers={checkAnswers}
-        showResult={showResult}
-        answered={userAnswers.reduce(
-          (acc, curr) => (curr === "" ? acc : acc + 1),
-          0
-        )}
-      />
-    </Container>
   )
 }
