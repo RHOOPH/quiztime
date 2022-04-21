@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { Link } from "react-router-dom"
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +21,7 @@ const SubTitle = styled.h4`
   font-weight: 400;
   text-align: center;
 `
-const Button = styled.div`
+const Button = styled(Link)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,6 +34,7 @@ const Button = styled.div`
   border-radius: 15px;
   font-size: 16px;
   cursor: pointer;
+  text-decoration: none;
 `
 
 export default function Intro(props) {
@@ -40,7 +42,7 @@ export default function Intro(props) {
     <Container>
       <Title>Quizzical</Title>
       <SubTitle>Test your knowledge about computers</SubTitle>
-      <Button onClick={() => props.newGame()}>
+      <Button to="/play">
         <span>Start Quiz</span>
       </Button>
     </Container>
