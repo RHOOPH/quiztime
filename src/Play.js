@@ -3,11 +3,13 @@ import Quiz from "./Quiz"
 import { useState, useEffect } from "react"
 import Footer from "./Footer.js"
 import { htmlDecode, shuffle } from "./utils"
+import { SpinnerCircularFixed as Spinner } from "spinners-react"
 
 const Container = styled.div`
   padding: 40px 2rem;
   max-width: 70ch;
   background-color: white;
+  overflow: hidden;
 `
 const Loading = styled.div`
   display: flex;
@@ -87,19 +89,16 @@ export default function Play() {
     }
   }
 
-  const quizArray = allQuiz.map((quiz) => (
+  const quizArray = allQuiz.map((quiz, i) => (
     <Quiz
       key={quiz.id}
       quiz={quiz}
       selectOption={selectOption}
       selectedOption={userAnswers[quiz.id]}
       showResult={showResult}
+      index={i}
     />
   ))
-
-  // useEffect(() => {
-  //   setUserAnswers(allQuiz.length ? allQuiz.map((obj) => "") : [])
-  // }, [allQuiz])
 
   useEffect(() => {
     newGame()
@@ -112,7 +111,9 @@ export default function Play() {
         <button onClick={newGame}>Retry</button>
       </Retry>
     ) : (
-      <Loading>Loading</Loading>
+      <Loading>
+        <Spinner size="100px" color="white" />
+      </Loading>
     )
   ) : (
     <Container>

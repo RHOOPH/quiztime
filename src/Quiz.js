@@ -1,6 +1,7 @@
 import styled from "styled-components"
+import { animated, useSpring, useSprings } from "@react-spring/web"
 
-const Container = styled.div`
+const Container = styled(animated.div)`
   display: flex;
   flex-direction: column;
 `
@@ -13,7 +14,7 @@ const Options = styled.div`
   display: flex;
   flex-wrap: wrap;
 `
-const Option = styled.div`
+const Option = styled(animated.div)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,14 +24,6 @@ const Option = styled.div`
   border-radius: 7.94239px;
   cursor: pointer;
   min-width: 10ch;
-  background: ${({ status }) => {
-    if (status === "selected") return "#d6dbf5"
-    else if (status === "correct") return "#94d7a2"
-    else if (status === "wrong") return "#f8bcbc"
-    else return "transparent"
-  }};
-  ${({ status }) => status === "disabled" && "opacity:0.5;"}
-
   & > span {
     font-family: "Inter";
     font-size: 10.24px;
@@ -44,24 +37,45 @@ export default function Quiz({
   selectedOption,
   showResult,
   selectOption,
+  index,
 }) {
+  const spring = useSpring({
+    from: { x: -100, opacity: 0 },
+    to: { x: 0, opacity: 1 },
+    delay: index * 50,
+  })
+  const [colors, api] = useSprings(quiz.options.length, (item) => ({
+    background: "transparent",
+    opacity: 1,
+  }))
   const options = quiz.options.map((option, index) => {
-    let status = ""
     if (showResult) {
-      if (option === quiz.correct_answer) status = "correct"
+      if (option === quiz.correct_answer)
+        api.start((i) => {
+          if (i === index) return { background: "#94d7a2" }
+        })
       else {
         if (selectedOption !== quiz.correct_answer && selectedOption === option)
-          status = "wrong"
-        else status = "disabled"
+          api.start((i) => {
+            if (i === index) return { background: "#f8bcbc" }
+          })
+        else
+          api.start((i) => {
+            if (i === index) return { opacity: 0.5 }
+          })
       }
     } else {
-      if (selectedOption === option) status = "selected"
+      if (selectedOption === option)
+        api.start((i) => {
+          if (i === index) return { background: "#d6dbf5" }
+          else return { background: "transparent" }
+        })
     }
 
     return (
       <Option
         key={index}
-        status={status}
+        style={colors[index]}
         {...(!showResult && {
           onClick: () => selectOption(quiz.id, option),
         })}
@@ -73,7 +87,7 @@ export default function Quiz({
 
   return (
     <>
-      <Container>
+      <Container style={spring}>
         <Question>{quiz.question}</Question>
         <Options>{options}</Options>
       </Container>
