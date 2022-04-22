@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Footer from "./Footer.js"
 import { htmlDecode, shuffle } from "./utils"
 import { SpinnerCircularFixed as Spinner } from "spinners-react"
-import { animated, useTransition, config } from "@react-spring/web"
+import { animated, useTransition } from "@react-spring/web"
 
 const Container = styled(animated.div)`
   padding: 40px 2rem;
