@@ -60,6 +60,7 @@ export default function Play() {
             }
           })
         )
+        //if fetch resolves whithin 400ms UI breaks as transition animation is still running.
         setStatus(READY)
         setUserAnswers(data.results.map((obj) => ""))
         setScore(0)
@@ -125,7 +126,15 @@ export default function Play() {
     ) : item === ERROR ? (
       <Retry style={style}>
         <div>Oops something went wrong</div>
-        <button onClick={newGame}>Retry</button>
+        <button
+          onClick={() => {
+            // added timeout of 400 ms so that animation has time to finish. Otherwise nothing gets rendered.
+            setStatus(LOADING)
+            setTimeout(() => newGame(), 400)
+          }}
+        >
+          Retry
+        </button>
       </Retry>
     ) : (
       <Container style={style}>
