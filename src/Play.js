@@ -27,14 +27,18 @@ const Retry = styled(Loading)`
 `
 
 export default function Play() {
+  const LOADING = "loading"
+  const ERROR = "error"
+  const READY = "ready"
+
   const [allQuiz, setAllQuiz] = useState([])
   const [userAnswers, setUserAnswers] = useState([])
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
-  const [status, setStatus] = useState("loading")
+  const [status, setStatus] = useState(LOADING)
 
   const getData = () => {
-    setStatus("loading")
+    setStatus(LOADING)
     // https://opentdb.com/api.php?amount=5&category=18&type=multiple
     // https://opentdb.com/api.php?amount=10&category=9&difficulty=easy
     fetch("https://opentdb.com/api.php?amount=7&category=18")
@@ -56,19 +60,18 @@ export default function Play() {
             }
           })
         )
-        setStatus("ready")
+        setStatus(READY)
         setUserAnswers(data.results.map((obj) => ""))
+        setScore(0)
+        setShowResult(false)
       })
       .catch((error) => {
         console.error("Oops, something went wrong ", error)
-        setStatus("error")
+        setStatus(ERROR)
       })
   }
 
   const newGame = () => {
-    setScore(0)
-    setShowResult(false)
-    setStatus("loading")
     getData()
   }
 
@@ -115,11 +118,11 @@ export default function Play() {
   })
 
   return transition((style, item) =>
-    item === "loading" ? (
+    item === LOADING ? (
       <Loading style={style}>
         <Spinner size="100px" color="white" />
       </Loading>
-    ) : item === "error" ? (
+    ) : item === ERROR ? (
       <Retry style={style}>
         <div>Oops something went wrong</div>
         <button onClick={newGame}>Retry</button>
