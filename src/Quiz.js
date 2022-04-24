@@ -24,6 +24,7 @@ const Option = styled(animated.div)`
   border-radius: 7.94239px;
   cursor: pointer;
   min-width: 10ch;
+  -webkit-tap-highlight-color: transparent;
   & > span {
     font-family: "Inter";
     font-size: 10.24px;
